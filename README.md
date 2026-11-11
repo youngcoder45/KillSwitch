@@ -35,6 +35,8 @@ testly is an anagram of tsetly
 
 ### Development
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and project-specific notes.
+
 Running tests:
 
 ```bash
