@@ -1,5 +1,13 @@
 use assert_cmd::Command;
 use predicates::prelude::*;
+use std::path::Path;
+
+fn run_fixture(name: &str) -> Command {
+    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    cmd.arg("run")
+        .arg(Path::new(env!("CARGO_MANIFEST_DIR")).join("tests").join(name));
+    cmd
+}
 
 #[test]
 fn test_cli_help_output() {
@@ -24,9 +32,9 @@ fn test_cli_handles_errors() {
 
 #[test]
 fn test_cli_fahrenheit() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = run_fixture("fahrenheit.ks");
 
-    cmd.args(vec!["run", "tests/fahrenheit.ks"])
+    cmd
         .write_stdin("23\n")
         .assert()
         .success()
@@ -35,9 +43,9 @@ fn test_cli_fahrenheit() {
 
 #[test]
 fn test_cli_factorial() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = run_fixture("factorial.ks");
 
-    cmd.args(vec!["run", "tests/factorial.ks"])
+    cmd
         .write_stdin("11\n")
         .assert()
         .success()
@@ -46,11 +54,11 @@ fn test_cli_factorial() {
 
 #[test]
 fn test_cli_fizzbuzz() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = run_fixture("fizzbuzz.ks");
 
     let payload = include_bytes!("fizzbuzz_output.txt");
 
-    cmd.args(vec!["run", "tests/fizzbuzz.ks"])
+    cmd
         .assert()
         .success()
         .stdout(predicate::eq(payload.as_slice()));
@@ -58,9 +66,9 @@ fn test_cli_fizzbuzz() {
 
 #[test]
 fn test_cli_greeting() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = run_fixture("greeting.ks");
 
-    cmd.args(vec!["run", "tests/greeting.ks"])
+    cmd
         .write_stdin("Alice\n32\n")
         .assert()
         .success()
@@ -73,24 +81,21 @@ fn test_cli_greeting() {
 
 #[test]
 fn test_cli_max() {
-    let cmd = || Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let cmd = || run_fixture("max.ks");
 
     cmd()
-        .args(vec!["run", "tests/max.ks"])
         .write_stdin("2\n78847\n")
         .assert()
         .success()
         .stdout(predicate::eq("78847"));
 
     cmd()
-        .args(vec!["run", "tests/max.ks"])
         .write_stdin("78847\n2\n")
         .assert()
         .success()
         .stdout(predicate::eq("78847"));
 
     cmd()
-        .args(vec!["run", "tests/max.ks"])
         .write_stdin("-78847\n2\n")
         .assert()
         .success()
@@ -116,9 +121,9 @@ fn test_cli_anagram() {
 
 #[test]
 fn test_cli_error_multiply() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = run_fixture("error_multiply.ks");
 
-    cmd.args(vec!["run", "tests/error_multiply.ks"])
+    cmd
         .assert()
         .failure()
         .stdout(predicate::str::contains(
@@ -128,9 +133,9 @@ fn test_cli_error_multiply() {
 
 #[test]
 fn test_cli_promo() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = run_fixture("promo.ks");
 
-    cmd.args(vec!["run", "tests/promo.ks"])
+    cmd
         .assert()
         .success()
         .stdout(predicate::eq("Hello World"));
