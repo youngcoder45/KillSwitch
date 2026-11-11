@@ -2,8 +2,10 @@ use assert_cmd::Command;
 use predicates::prelude::*;
 use std::path::Path;
 
+const BIN_NAME: &str = "killswitch";
+
 fn run_fixture(name: &str) -> Command {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::cargo_bin(BIN_NAME).unwrap();
     cmd.arg("run").arg(
         Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("tests")
@@ -15,7 +17,7 @@ fn run_fixture(name: &str) -> Command {
 #[test]
 fn test_cli_help_output() {
     // Automatically finds the binary named in your Cargo.toml
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::cargo_bin(BIN_NAME).unwrap();
 
     cmd.arg("--help")
         .assert()
@@ -25,7 +27,7 @@ fn test_cli_help_output() {
 
 #[test]
 fn test_cli_handles_errors() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::cargo_bin(BIN_NAME).unwrap();
 
     cmd.arg("--bad-flag")
         .assert()
@@ -100,7 +102,7 @@ fn test_cli_max() {
 
 #[test]
 fn test_cli_anagram() {
-    let cmd = || Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let cmd = || Command::cargo_bin(BIN_NAME).unwrap();
 
     cmd()
         .args(vec!["anagram", "testt", "tsett"])
