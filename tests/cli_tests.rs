@@ -4,8 +4,11 @@ use std::path::Path;
 
 fn run_fixture(name: &str) -> Command {
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.arg("run")
-        .arg(Path::new(env!("CARGO_MANIFEST_DIR")).join("tests").join(name));
+    cmd.arg("run").arg(
+        Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("tests")
+            .join(name),
+    );
     cmd
 }
 
@@ -34,8 +37,7 @@ fn test_cli_handles_errors() {
 fn test_cli_fahrenheit() {
     let mut cmd = run_fixture("fahrenheit.ks");
 
-    cmd
-        .write_stdin("23\n")
+    cmd.write_stdin("23\n")
         .assert()
         .success()
         .stdout(predicate::eq("73.4"));
@@ -45,8 +47,7 @@ fn test_cli_fahrenheit() {
 fn test_cli_factorial() {
     let mut cmd = run_fixture("factorial.ks");
 
-    cmd
-        .write_stdin("11\n")
+    cmd.write_stdin("11\n")
         .assert()
         .success()
         .stdout(predicate::eq("39916800"));
@@ -58,8 +59,7 @@ fn test_cli_fizzbuzz() {
 
     let payload = include_bytes!("fizzbuzz_output.txt");
 
-    cmd
-        .assert()
+    cmd.assert()
         .success()
         .stdout(predicate::eq(payload.as_slice()));
 }
@@ -68,15 +68,11 @@ fn test_cli_fizzbuzz() {
 fn test_cli_greeting() {
     let mut cmd = run_fixture("greeting.ks");
 
-    cmd
-        .write_stdin("Alice\n32\n")
-        .assert()
-        .success()
-        .stdout(
-            predicate::str::contains("Hello")
-                .and(predicate::str::contains("Alice"))
-                .and(predicate::str::contains("32")),
-        );
+    cmd.write_stdin("Alice\n32\n").assert().success().stdout(
+        predicate::str::contains("Hello")
+            .and(predicate::str::contains("Alice"))
+            .and(predicate::str::contains("32")),
+    );
 }
 
 #[test]
@@ -123,20 +119,14 @@ fn test_cli_anagram() {
 fn test_cli_error_multiply() {
     let mut cmd = run_fixture("error_multiply.ks");
 
-    cmd
-        .assert()
-        .failure()
-        .stdout(predicate::str::contains(
-            "Invalid func call, need an anagram of multiply",
-        ));
+    cmd.assert().failure().stdout(predicate::str::contains(
+        "Invalid func call, need an anagram of multiply",
+    ));
 }
 
 #[test]
 fn test_cli_promo() {
     let mut cmd = run_fixture("promo.ks");
 
-    cmd
-        .assert()
-        .success()
-        .stdout(predicate::eq("Hello World"));
+    cmd.assert().success().stdout(predicate::eq("Hello World"));
 }
